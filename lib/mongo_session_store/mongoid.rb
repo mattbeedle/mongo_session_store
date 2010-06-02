@@ -20,7 +20,7 @@ module ActionDispatch
 
       private
         def generate_sid
-          Mongo::ObjectID.new
+          BSON::ObjectID.new
         end
 
         def get_session(env, sid)
