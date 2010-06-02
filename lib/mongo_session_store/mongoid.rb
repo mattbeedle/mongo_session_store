@@ -8,7 +8,7 @@ module ActionDispatch
         include Mongoid::Document
         include Mongoid::Timestamps
 
-        field :data, :type => Hash, :default => {}
+        field :data, :type => String, :default => [Marshal.dump({})].pack("m*")
         index :updated_at
       end
 
@@ -27,12 +27,12 @@ module ActionDispatch
           sid ||= generate_sid
           session = find_session(sid)
           env[SESSION_RECORD_KEY] = session
-          [sid, HashWithIndifferentAccess.new(session.data)]
+          [sid, unpack(session.data)]
         end
 
         def set_session(env, sid, session_data)
           record = env[SESSION_RECORD_KEY] ||= find_session(sid)
-          record.data = session_data
+          record.data = pack(session_data)
           #per rack spec: Should return true or false dependant on whether or not the session was saved or not.
           record.save ? true : false
         end
@@ -40,6 +40,15 @@ module ActionDispatch
         def find_session(id)
           @@session_class.first(:conditions => { :_id => id }) ||
             @@session_class.new(:id => id)
+        end
+
+        def pack(data)
+          [Marshal.dump(data)].pack("m*")
+        end
+
+        def unpack(packed)
+          return nil unless packed
+          Marshal.load(packed.unpack("m*").first)
         end
     end
   end
