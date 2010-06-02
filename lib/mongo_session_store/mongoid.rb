@@ -1,9 +1,9 @@
 require 'mongoid'
 
-module ActionController
+module ActionDispatch
   module Session
     class MongoidStore < AbstractStore
-      
+
       class Session
         include Mongoid::Document
         include Mongoid::Timestamps
@@ -50,7 +50,6 @@ module ActionController
           return nil unless packed
           Marshal.load(packed.unpack("m*").first)
         end
-      
     end
   end
 end
