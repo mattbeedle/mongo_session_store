@@ -38,8 +38,8 @@ module ActionDispatch
         end
 
         def find_session(id)
-          @@session_class.find(id) ||
-            @@session_class.new(:id=>id)
+          @@session_class.first(:conditions => { :_id => id }) ||
+            @@session_class.new(:id => id)
         end
 
         def pack(data)
