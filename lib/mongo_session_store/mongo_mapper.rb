@@ -20,7 +20,7 @@ module ActionController
 
       private
         def generate_sid
-          BSON::ObjectID.new
+          BSON::ObjectId.new
         end
 
         def get_session(env, sid)
@@ -40,7 +40,7 @@ module ActionController
         def find_session(id)
           @@session_class.find(id) ||
             @@session_class.new(:id=>id)
-        rescue BSON::InvalidObjectID
+        rescue BSON::InvalidObjectId
           @@session_class.new(:id => generate_sid)
         end
 
